@@ -4,10 +4,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzhamUkuKTNL6-z8RW44Y-G
 async function callApi(payload) {
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8",
-    },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload) // el browser usa text/plain por default
   });
 
   if (!response.ok) {
