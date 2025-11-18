@@ -4,7 +4,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzhamUkuKTNL6-z8RW44Y-G
 async function callApi(payload) {
   const response = await fetch(API_URL, {
     method: "POST",
-    // important: no explicit mode:"cors" and use a "simple" content-type
     headers: {
       "Content-Type": "text/plain;charset=utf-8",
     },
@@ -18,6 +17,7 @@ async function callApi(payload) {
   const data = await response.json();
   return data;
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const registerForm = document.getElementById("registerForm");
