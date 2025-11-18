@@ -100,94 +100,8 @@
       align-items: center;
       gap: 6px;
       margin-top: 4px;
-    }
-
-    .btn-primary {
       background: linear-gradient(135deg, #f97316, #facc15);
       color: #0f172a;
-    }
-
-    .btn-secondary {
-      background: #1f2937;
-      color: #e5e7eb;
-    }
-
-    .btn-wa {
-      background: #22c55e;
-      color: #022c22;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #1f2937;
-      color: #fbbf24;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .badge span {
-      font-size: 0.75rem;
-    }
-
-    .note {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      margin-top: 8px;
-    }
-
-    .message {
-      margin-top: 12px;
-      font-size: 0.8rem;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-    }
-
-    .message.success {
-      background: rgba(22, 163, 74, 0.1);
-      border-color: #16a34a;
-      color: #bbf7d0;
-    }
-
-    .message.error {
-      background: rgba(239, 68, 68, 0.08);
-      border-color: #ef4444;
-      color: #fecaca;
-    }
-
-    .message.info {
-      background: rgba(59, 130, 246, 0.08);
-      border-color: #3b82f6;
-      color: #bfdbfe;
-    }
-
-    .code-display {
-      margin-top: 8px;
-      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.95rem;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: #020617;
-      border: 1px dashed #4b5563;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .code-display span {
-      letter-spacing: 0.08em;
-    }
-
-    .code-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
     }
 
     .footer {
@@ -201,69 +115,42 @@
   <div class="container">
     <h1>Descuento · H Restaurant</h1>
     <div class="subtitle">
-      15% de descuento en comida (bebidas no incluidas).  
+      15% de descuento en comida (bebidas no incluidas).<br />
       Registra clientes y redime el beneficio desde esta misma página.
     </div>
 
     <div class="grid">
       <!-- Registrar -->
       <section class="card">
-        <div class="badge">
-          <span>Nuevo cliente</span> · 15% comida
-        </div>
-        <h2>Registrar cliente y generar código</h2>
+        <h2>Registrar cliente</h2>
         <p>Ingresa el nombre y teléfono. El sistema genera un código único y lo guarda en Google Sheets.</p>
 
-        <form id="registerForm">
+        <form method="POST" action="https://script.google.com/macros/s/AKfycbzhamUkuKTNL6-z8RW44Y-GUberl4S0_ovSJ04WJrAbFOXxY488axrHkOAMSQtZEWtA/exec">
+          <input type="hidden" name="action" value="create" />
+
           <label for="nombre">Nombre del cliente</label>
           <input id="nombre" name="nombre" type="text" required placeholder="Ej. María López" />
 
           <label for="telefono">Teléfono</label>
           <input id="telefono" name="telefono" type="tel" required placeholder="Ej. 787-555-1234" />
 
-          <button type="submit" class="btn-primary">
-            Generar código
-          </button>
+          <button type="submit">Generar código</button>
         </form>
-
-        <div id="registerCode" class="code-display" style="display:none;">
-          <span id="registerCodeValue"></span>
-          <div class="code-actions">
-            <button id="copyCodeBtn" class="btn-secondary" type="button">
-              Copiar
-            </button>
-            <button id="whatsAppBtn" class="btn-wa" type="button">
-              WhatsApp
-            </button>
-          </div>
-        </div>
-
-        <div id="registerMessage" class="message info" style="display:none;"></div>
       </section>
 
       <!-- Redimir -->
       <section class="card">
-        <div class="badge">
-          <span>Redimir descuento</span>
-        </div>
-        <h2>Buscar cliente / código</h2>
+        <h2>Redimir descuento</h2>
         <p>Busca por nombre, teléfono o código para validar y marcar como canjeado.</p>
 
-        <form id="redeemForm">
-          <label for="busqueda">Nombre, teléfono o código</label>
-          <input id="busqueda" name="busqueda" type="text" required placeholder="Ej. H-8F2K9Q o 787-555-1234" />
+        <form method="POST" action="https://script.google.com/macros/s/AKfycbzhamUkuKTNL6-z8RW44Y-GUberl4S0_ovSJ04WJrAbFOXxY488axrHkOAMSQtZEWtA/exec">
+          <input type="hidden" name="action" value="redeem" />
 
-          <button type="submit" class="btn-primary">
-            Buscar y redimir
-          </button>
+          <label for="term">Nombre, teléfono o código</label>
+          <input id="term" name="term" type="text" required placeholder="Ej. H-8F2K9Q o 787-555-1234" />
+
+          <button type="submit">Buscar y redimir</button>
         </form>
-
-        <div id="redeemMessage" class="message info" style="display:none;"></div>
-
-        <p class="note">
-          • El descuento aplica solo a comida, no incluye bebidas.  
-          • Verifica que el registro no esté ya canjeado antes de aplicar el descuento en el POS.
-        </p>
       </section>
     </div>
 
@@ -271,7 +158,5 @@
       Uso interno · H Restaurant · Descuento 15% comida · Bebidas excluidas.
     </div>
   </div>
-
-  <script src="app.js"></script>
 </body>
 </html>
