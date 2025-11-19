@@ -1,0 +1,825 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H Restaurant - Gift Cards</title>
+    <style>
+        /* TODO EL CSS SE MANTIENE IGUAL */
+        :root {
+            --primary-color: #008080;
+            --secondary-color: #f5f5f5;
+            --accent-color: #388e3c;
+            --text-color: #333;
+            --light-text: #fff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #a01515;
+            transform: translateY(-1px);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-whatsapp {
+            background-color: #25D366;
+        }
+        
+        .btn-whatsapp:hover {
+            background-color: #1da851;
+        }
+        
+        .btn-secondary {
+            background-color: #666;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #555;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            color: var(--accent-color);
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #c62828;
+        }
+        
+        .code-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            letter-spacing: 3px;
+            border: 2px dashed #ddd;
+        }
+        
+        .validity-info {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .tab:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .terms {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .team-member {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .connection-status {
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .status-connected { background-color: #4caf50; color: white; }
+        .status-error { background-color: #f44336; color: white; }
+        
+        .debug-info {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .terms ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .terms li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tab {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                margin-right: 0;
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.logo {
+    height: 60px;           /* Tamaño fijo de 60px */
+    width: auto;            /* Ancho automático */
+    object-fit: contain;    /* Mantiene proporción */
+}
+
+.title-container {
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Para móviles */
+@media (max-width: 768px) {
+    .logo-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .logo {
+        height: 50px;       /* Un poco más pequeño en móviles */
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+    <div class="logo-container">
+    <img src="https://dl.dropbox.com/scl/fi/04lnq6u4rwczzfsp5nnq1/logo_historias_y_un_cafe_03.png?rlkey=a3emgxnma2tgkp1c8b8yh1ja5&st=m2eihwqv&dl=0" class="logo logo-historias">
+    <div class="title-container">
+        <h1>Historias y un café | H Restaurant</h1>
+        <p class="subtitle">Programa de Lealtad de Historias y un café</p>
+    </div>
+    <img src="https://dl.dropbox.com/scl/fi/j1zldnvqjfrusoskknu38/1-1.png?rlkey=3m34dixyo1tx4ludfz582pufg&st=wbsvgwfu&dl=0" class="logo logo-hrestaurant">
+</div>
+</header>
+        
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="register">Registrar Cliente</div>
+            <div class="tab" data-tab="redeem">Redimir Descuento</div>
+        </div>
+        
+        <div class="tab-content active" id="register-tab">
+            <div class="card">
+                <h2>Registrar Nuevo Cliente</h2>
+                <p>Complete la información para generar un código de descuento del 15%</p>
+                
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo *</label>
+                        <input type="text" id="name" name="name" required placeholder="Ingrese el nombre completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Número de Teléfono *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="Ingrese el número de teléfono">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="team-member">Miembro del Equipo *</label>
+                        <select id="team-member" name="team-member" required>
+                            <option value="">Seleccione un miembro del equipo</option>
+                            <option value="Aida">Aida</option>
+                            <option value="Alanis">Alanis</option>
+                            <option value="José">José</option>
+                            <option value="Kiaraliz">Kiaraliz</option>
+                            <option value="Tamara">Tamara</option>
+                            <option value="Valeria">Valeria</option>
+                            <option value="Verónica">Verónica</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" id="register-btn">
+                        <span class="loading hidden"></span>
+                        Generar Código de Descuento
+                    </button>
+                </form>
+                
+                <div class="success-message hidden" id="register-success">
+                    <h3>¡Cliente registrado exitosamente!</h3>
+                    <p>Se ha generado el siguiente código de descuento:</p>
+                    <div class="code-display" id="generated-code"></div>
+                    
+                    <div class="validity-info" id="validity-info"></div>
+                    
+                    <div class="team-member">
+                        <strong>Registrado por:</strong> <span id="registered-by"></span>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" class="btn-whatsapp" id="whatsapp-btn">
+                            📱 Enviar por WhatsApp
+                        </button>
+                        <button type="button" class="btn-secondary" id="new-client-btn">
+                            ➕ Nuevo Cliente
+                        </button>
+                    </div>
+                </div>
+
+                <div class="debug-info" id="debug-info">
+                    <strong>Info de Depuración:</strong>
+                    <div id="debug-content">Esperando acción...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="redeem-tab">
+            <div class="card">
+                <h2>Redimir Descuento</h2>
+                <p>Ingrese la información del cliente o el código para aplicar el descuento</p>
+                
+                <form id="redeem-form">
+                    <div class="form-group">
+                        <label for="redeem-name">Nombre Completo</label>
+                        <input type="text" id="redeem-name" name="redeem-name" placeholder="Ingrese el nombre del cliente">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="redeem-phone">Número de Teléfono</label>
+                        <input type="tel" id="redeem-phone" name="redeem-phone" placeholder="Ingrese el teléfono del cliente">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="redeem-code">Código de Descuento</label>
+                        <input type="text" id="redeem-code" name="redeem-code" placeholder="Ingrese el código de descuento">
+                    </div>
+                    
+                    <p class="terms">Nota: Puede ingresar cualquiera de los campos anteriores para buscar el descuento.</p>
+                    
+                    <button type="submit" id="redeem-btn">
+                        <span class="loading hidden"></span>
+                        Verificar y Aplicar Descuento
+                    </button>
+                </form>
+                
+                <div class="success-message hidden" id="redeem-success">
+                    <h3>¡Descuento aplicado exitosamente!</h3>
+                    <p>Se ha aplicado un 15% de descuento al consumo (excluyendo bebidas) de <span id="customer-name"></span>.</p>
+                    <p>El código utilizado fue: <strong id="used-code"></strong></p>
+                </div>
+                
+                <div class="error-message hidden" id="redeem-error">
+                    <h3>No se pudo aplicar el descuento</h3>
+                    <p id="error-message">El código o la información del cliente no son válidos o ya han sido utilizados.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="terms card">
+            <h3>Términos y Condiciones</h3>
+            <ul>
+                <li>El descuento del 15% aplica únicamente al consumo de alimentos, excluyendo bebidas.</li>
+                <li>Cada código es válido para un solo uso.</li>
+                <li>El descuento no es transferible y no puede combinarse con otras promociones.</li>
+                <li>El código tiene validez de 30 días a partir de la fecha de emisión.</li>
+                <li>H Restaurant se reserva el derecho de modificar estos términos en cualquier momento.</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>H Restaurant &copy; 2023 - Sistema de Tarjetas de Regalo</p>
+        </footer>
+    </div>
+
+    <script>
+        // ⚠️ TU URL REAL DE SHEETDB
+        const SHEETDB_URL = 'https://sheetdb.io/api/v1/2ctd5w1czlgzf';
+        
+        let currentCustomerData = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Aplicación H Restaurant con SheetDB iniciada');
+            setupEventListeners();
+            testConnection();
+        });
+
+        async function testConnection() {
+            try {
+                document.getElementById('debug-content').textContent = 'Probando conexión con SheetDB...';
+                const response = await fetch(SHEETDB_URL);
+                const data = await response.json();
+                document.getElementById('debug-content').textContent = `✅ Conexión exitosa. ${data.length} registros encontrados.`;
+                console.log('Test conexión:', data);
+            } catch (error) {
+                document.getElementById('debug-content').textContent = `❌ Error de conexión: ${error.message}`;
+                console.error('Error test conexión:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegistration();
+            });
+
+            document.getElementById('whatsapp-btn').addEventListener('click', sendWhatsAppMessage);
+            document.getElementById('new-client-btn').addEventListener('click', resetRegistrationForm);
+            document.getElementById('redeem-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRedemption();
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            hideAllMessages();
+        }
+
+        function hideAllMessages() {
+            document.querySelectorAll('.success-message, .error-message').forEach(msg => {
+                msg.classList.add('hidden');
+            });
+        }
+
+        function showLoading(buttonId) {
+            const button = document.getElementById(buttonId);
+            button.disabled = true;
+            const loading = button.querySelector('.loading');
+            if (loading) loading.classList.remove('hidden');
+        }
+
+        function hideLoading(buttonId) {
+            const button = document.getElementById(buttonId);
+            button.disabled = false;
+            const loading = button.querySelector('.loading');
+            if (loading) loading.classList.add('hidden');
+        }
+
+        function calculateExpiryDate() {
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            return expiryDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatWhatsAppMessage(customerData) {
+            const expiryDate = calculateExpiryDate();
+            return `🎉 ¡Invitación Especial de Historias y un Café!
+
+Como cliente leal, te invitamos a descubrir H Restaurant con un 15% de descuento exclusivo.
+
+H Restaurant es nuestro nuevo concepto de fusión creativa. Muestra este código al momento de pagar.
+
+Tu código: ${customerData.code}
+
+📱 *Explora nuestro menú digital:*
+https://hrestaurant.glide.page
+
+⚠️ *Términos:*
+• No aplica a bebidas alcohólicas
+• Válido por 30 días (hasta el ${expiryDate})
+
+¡Esperamos verte pronto en H Restaurant! 🍽️✨`;
+        }
+
+        async function handleRegistration() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const teamMember = document.getElementById('team-member').value;
+            
+            if (!name || !phone || !teamMember) {
+                alert('Por favor complete todos los campos obligatorios.');
+                return;
+            }
+
+            showLoading('register-btn');
+            hideAllMessages();
+            document.getElementById('debug-content').textContent = 'Enviando datos a SheetDB...';
+
+            try {
+                const code = generateUniqueCode();
+                const response = await registerCustomer(name, phone, teamMember, code);
+                document.getElementById('debug-content').textContent = `Respuesta recibida: ${JSON.stringify(response)}`;
+                
+                // VERIFICACIÓN MEJORADA - SheetDB puede devolver diferentes estructuras
+                if (response && (response.created > 0 || response.id)) {
+                    currentCustomerData = { 
+                        name, 
+                        phone, 
+                        code: code, // Usamos el código que generamos, no el de la respuesta
+                        teamMember, 
+                        expiryDate: calculateExpiryDate() 
+                    };
+                    showRegistrationSuccess(code, teamMember);
+                } else {
+                    alert('Error al registrar el cliente. Respuesta: ' + JSON.stringify(response));
+                }
+            } catch (error) {
+                console.error('Error completo:', error);
+                document.getElementById('debug-content').textContent = `❌ Error: ${error.message}`;
+                alert('Error de conexión: ' + error.message);
+            } finally {
+                hideLoading('register-btn');
+            }
+        }
+
+        function showRegistrationSuccess(code, teamMember) {
+            document.getElementById('generated-code').textContent = code;
+            document.getElementById('registered-by').textContent = teamMember;
+            document.getElementById('validity-info').textContent = `✅ Válido hasta el ${calculateExpiryDate()}`;
+            document.getElementById('register-success').classList.remove('hidden');
+        }
+
+        function sendWhatsAppMessage() {
+            if (!currentCustomerData) {
+                alert('No hay datos de cliente para enviar.');
+                return;
+            }
+            
+            const message = formatWhatsAppMessage(currentCustomerData);
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${currentCustomerData.phone}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function resetRegistrationForm() {
+            document.getElementById('register-form').reset();
+            document.getElementById('register-success').classList.add('hidden');
+            currentCustomerData = null;
+            document.getElementById('debug-content').textContent = 'Formulario reiniciado. Listo para nuevo registro.';
+        }
+
+        async function handleRedemption() {
+            const name = document.getElementById('redeem-name').value.trim();
+            const phone = document.getElementById('redeem-phone').value.trim();
+            const code = document.getElementById('redeem-code').value.trim().toUpperCase();
+            
+            if (!name && !phone && !code) {
+                alert('Por favor ingrese al menos un campo para buscar.');
+                return;
+            }
+
+            showLoading('redeem-btn');
+            hideAllMessages();
+            document.getElementById('debug-content').textContent = `Buscando código: ${code}`;
+
+            try {
+                const response = await redeemDiscount(name, phone, code);
+                
+                if (response.success) {
+                    document.getElementById('customer-name').textContent = response.customerName;
+                    document.getElementById('used-code').textContent = response.code;
+                    document.getElementById('redeem-success').classList.remove('hidden');
+                    document.getElementById('redeem-form').reset();
+                    document.getElementById('debug-content').textContent = '✅ Descuento aplicado exitosamente';
+                } else {
+                    document.getElementById('error-message').textContent = response.message;
+                    document.getElementById('redeem-error').classList.remove('hidden');
+                    document.getElementById('debug-content').textContent = `❌ Error: ${response.message}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('debug-content').textContent = `❌ Error: ${error.message}`;
+                alert('Error de conexión: ' + error.message);
+            } finally {
+                hideLoading('redeem-btn');
+            }
+        }
+
+        // FUNCIONES CON SHEETDB - CORREGIDAS
+        async function registerCustomer(name, phone, teamMember, code) {
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            
+            const data = {
+                data: {
+                    Timestamp: new Date().toISOString(),
+                    Nombre: name,
+                    Telefono: phone,
+                    Codigo: code,
+                    Descuento: 15,
+                    Utilizado: "FALSE",
+                    FechaRedencion: "",
+                    MiembroEquipo: teamMember,
+                    FechaVencimiento: expiryDate.toISOString().split('T')[0]
+                }
+            };
+            
+            console.log('Enviando a SheetDB:', data);
+            
+            const response = await fetch(SHEETDB_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+        }
+
+        async function redeemDiscount(name, phone, code) {
+    try {
+        document.getElementById('debug-content').textContent += `\nBuscando código: ${code}`;
+        
+        // Buscar por código
+        let searchUrl = `${SHEETDB_URL}/search?Codigo=${code}`;
+        const response = await fetch(searchUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.length === 0) {
+            return { success: false, message: 'Código no encontrado' };
+        }
+        
+        const customer = data[0];
+        
+        // Verificar si ya fue utilizado
+        if (customer.Utilizado === "TRUE") {
+            return { success: false, message: 'Este código ya ha sido utilizado' };
+        }
+        
+        // Verificar si expiró
+        const expiryDate = new Date(customer.FechaVencimiento);
+        const today = new Date();
+        if (today > expiryDate) {
+            return { success: false, message: 'Este código ha expirado' };
+        }
+        
+        // ACTUALIZAR SIN USAR ID - SheetDB permite actualizar por búsqueda
+        const updateData = {
+            Utilizado: "TRUE",
+            FechaRedencion: new Date().toISOString()
+        };
+        
+        // Actualizar usando el código como referencia
+        const updateUrl = `${SHEETDB_URL}/Codigo/${code}`;
+        const updateResponse = await fetch(updateUrl, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: updateData })
+        });
+        
+        if (!updateResponse.ok) {
+            // Si falla, intentar con PUT
+            const putResponse = await fetch(updateUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: updateData })
+            });
+            
+            if (!putResponse.ok) {
+                throw new Error(`Error al actualizar: ${putResponse.status}`);
+            }
+        }
+        
+        return { 
+            success: true, 
+            customerName: customer.Nombre, 
+            code: customer.Codigo 
+        };
+        
+    } catch (error) {
+        document.getElementById('debug-content').textContent += `\n❌ Error en redeemDiscount: ${error.message}`;
+        throw error;
+    }
+}
+
+        function generateUniqueCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+    </script>
+</body>
+</html>
