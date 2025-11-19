@@ -469,7 +469,7 @@
                         <input type="text" id="redeem-code" name="redeem-code" placeholder="Ingrese el código de descuento">
                     </div>
                     
-                    <p class="terms">Nota: Puede ingresar cualquiera de los campos anteriores para buscar el descuento.</p>
+                    <p class="terms">Nota: Ingrese el número de teléfono y/o código del cliente para buscar el descuento.</p>
                     
                     <button type="submit" id="redeem-btn">
                         <span class="loading hidden"></span>
@@ -743,10 +743,28 @@ https://hrestaurant.glide.page
     return await response.json();
 }
 
-       async function redeemDiscount(name, phone, code) {
+      async function redeemDiscount(name, phone, code) {
     try {
-        // Buscar por código
-        let searchUrl = `${SHEETDB_URL}/search?redemption_code=${code}`;
+        // Validar que se ingrese al menos teléfono O código
+        if (!phone && !code) {
+            return { success: false, message: 'Ingrese teléfono o código' };
+        }
+
+        let searchUrl;
+        
+        // BUSCAR POR TELÉFONO + CÓDIGO (si ambos están presentes)
+        if (phone && code) {
+            searchUrl = `${SHEETDB_URL}/search?phone_number=${phone}&redemption_code=${code}`;
+        }
+        // BUSCAR SOLO POR CÓDIGO (si solo hay código)
+        else if (code) {
+            searchUrl = `${SHEETDB_URL}/search?redemption_code=${code}`;
+        }
+        // BUSCAR SOLO POR TELÉFONO (si solo hay teléfono)
+        else if (phone) {
+            searchUrl = `${SHEETDB_URL}/search?phone_number=${phone}`;
+        }
+
         const response = await fetch(searchUrl);
         
         if (!response.ok) {
@@ -756,9 +774,10 @@ https://hrestaurant.glide.page
         const data = await response.json();
         
         if (data.length === 0) {
-            return { success: false, message: 'Código no encontrado' };
+            return { success: false, message: 'No se encontró el cliente' };
         }
-        
+
+        // Si hay múltiples resultados, tomar el primero
         const customer = data[0];
         
         // Verificar si ya fue utilizado
@@ -766,17 +785,13 @@ https://hrestaurant.glide.page
             return { success: false, message: 'Este código ya ha sido utilizado' };
         }
         
-        // Verificar si expiró (necesitaríamos una columna expiry_date)
-        // Por ahora no verificamos expiración
-        
         // ACTUALIZAR
         const updateData = {
             redeemed: "TRUE",
             redeemed_at: new Date().toISOString()
         };
         
-        // Actualizar usando el código como referencia
-        const updateUrl = `${SHEETDB_URL}/redemption_code/${code}`;
+        const updateUrl = `${SHEETDB_URL}/redemption_code/${customer.redemption_code}`;
         const updateResponse = await fetch(updateUrl, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
