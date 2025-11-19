@@ -716,14 +716,15 @@ https://hrestaurant.glide.page
     expiryDate.setDate(expiryDate.getDate() + 30);
     
     const data = {
-        authorized_by: teamMember,
-        customer_name: name,
-        phone_number: phone,
-        discount_percentage: 15,
-        created_at: new Date().toISOString(),
-        redemption_code: code,
-        redeemed: "FALSE",
-        redeemed_at: ""
+        authorized_by: teamMember,           // Miembro del equipo
+        customer_name: name,                 // Nombre del cliente
+        phone_number: phone,                 // Teléfono del cliente
+        discount_percentage: 15,             // Porcentaje de descuento
+        created_at: new Date().toISOString(), // Fecha de creación
+        redemption_code: code,               // Código generado
+        redeemed: "FALSE",                   // No utilizado aún
+        redeemed_at: "",                     // Vacío hasta que se redima
+        expiration_date: expiryDate.toISOString().split('T')[0] // Fecha vencimiento
     };
     
     console.log('Enviando a SheetDB:', data);
