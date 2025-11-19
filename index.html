@@ -712,44 +712,40 @@ https://hrestaurant.glide.page
 
         // FUNCIONES CON SHEETDB - CORREGIDAS
         async function registerCustomer(name, phone, teamMember, code) {
-            const expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + 30);
-            
-            const data = {
-                data: {
-                    Timestamp: new Date().toISOString(),
-                    Nombre: name,
-                    Telefono: phone,
-                    Codigo: code,
-                    Descuento: 15,
-                    Utilizado: "FALSE",
-                    FechaRedencion: "",
-                    MiembroEquipo: teamMember,
-                    FechaVencimiento: expiryDate.toISOString().split('T')[0]
-                }
-            };
-            
-            console.log('Enviando a SheetDB:', data);
-            
-            const response = await fetch(SHEETDB_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            return await response.json();
-        }
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 30);
+    
+    const data = {
+        authorized_by: teamMember,
+        customer_name: name,
+        phone_number: phone,
+        discount_percentage: 15,
+        created_at: new Date().toISOString(),
+        redemption_code: code,
+        redeemed: "FALSE",
+        redeemed_at: ""
+    };
+    
+    console.log('Enviando a SheetDB:', data);
+    
+    const response = await fetch(SHEETDB_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: data })
+    });
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+    }
+    
+    return await response.json();
+}
 
-        async function redeemDiscount(name, phone, code) {
+       async function redeemDiscount(name, phone, code) {
     try {
-        document.getElementById('debug-content').textContent += `\nBuscando código: ${code}`;
-        
         // Buscar por código
-        let searchUrl = `${SHEETDB_URL}/search?Codigo=${code}`;
+        let searchUrl = `${SHEETDB_URL}/search?redemption_code=${code}`;
         const response = await fetch(searchUrl);
         
         if (!response.ok) {
@@ -765,25 +761,21 @@ https://hrestaurant.glide.page
         const customer = data[0];
         
         // Verificar si ya fue utilizado
-        if (customer.Utilizado === "TRUE") {
+        if (customer.redeemed === "TRUE") {
             return { success: false, message: 'Este código ya ha sido utilizado' };
         }
         
-        // Verificar si expiró
-        const expiryDate = new Date(customer.FechaVencimiento);
-        const today = new Date();
-        if (today > expiryDate) {
-            return { success: false, message: 'Este código ha expirado' };
-        }
+        // Verificar si expiró (necesitaríamos una columna expiry_date)
+        // Por ahora no verificamos expiración
         
-        // ACTUALIZAR SIN USAR ID - SheetDB permite actualizar por búsqueda
+        // ACTUALIZAR
         const updateData = {
-            Utilizado: "TRUE",
-            FechaRedencion: new Date().toISOString()
+            redeemed: "TRUE",
+            redeemed_at: new Date().toISOString()
         };
         
         // Actualizar usando el código como referencia
-        const updateUrl = `${SHEETDB_URL}/Codigo/${code}`;
+        const updateUrl = `${SHEETDB_URL}/redemption_code/${code}`;
         const updateResponse = await fetch(updateUrl, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -791,26 +783,16 @@ https://hrestaurant.glide.page
         });
         
         if (!updateResponse.ok) {
-            // Si falla, intentar con PUT
-            const putResponse = await fetch(updateUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: updateData })
-            });
-            
-            if (!putResponse.ok) {
-                throw new Error(`Error al actualizar: ${putResponse.status}`);
-            }
+            throw new Error(`Error al actualizar: ${updateResponse.status}`);
         }
         
         return { 
             success: true, 
-            customerName: customer.Nombre, 
-            code: customer.Codigo 
+            customerName: customer.customer_name, 
+            code: customer.redemption_code 
         };
         
     } catch (error) {
-        document.getElementById('debug-content').textContent += `\n❌ Error en redeemDiscount: ${error.message}`;
         throw error;
     }
 }
