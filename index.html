@@ -455,22 +455,17 @@
                 
                 <form id="redeem-form">
                     <div class="form-group">
-                        <label for="redeem-name">Nombre Completo</label>
-                        <input type="text" id="redeem-name" name="redeem-name" placeholder="Ingrese el nombre del cliente">
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="redeem-phone">Número de Teléfono</label>
                         <input type="tel" id="redeem-phone" name="redeem-phone" placeholder="Ingrese el teléfono del cliente">
                     </div>
-                    
+    
                     <div class="form-group">
                         <label for="redeem-code">Código de Descuento</label>
                         <input type="text" id="redeem-code" name="redeem-code" placeholder="Ingrese el código de descuento">
                     </div>
-                    
+    
                     <p class="terms">Nota: Ingrese el número de teléfono y/o código del cliente para buscar el descuento.</p>
-                    
+    
                     <button type="submit" id="redeem-btn">
                         <span class="loading hidden"></span>
                         Verificar y Aplicar Descuento
@@ -674,12 +669,12 @@ https://hrestaurant.glide.page
         }
 
         async function handleRedemption() {
-            const name = document.getElementById('redeem-name').value.trim();
+            // SOLO teléfono y código - sin nombre
             const phone = document.getElementById('redeem-phone').value.trim();
             const code = document.getElementById('redeem-code').value.trim().toUpperCase();
-            
-            if (!name && !phone && !code) {
-                alert('Por favor ingrese al menos un campo para buscar.');
+    
+            if (!phone && !code) {
+                alert('Por favor ingrese teléfono o código para buscar.');
                 return;
             }
 
