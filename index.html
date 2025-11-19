@@ -45,17 +45,44 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
+        /* AGREGAR RALEWAY */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
+
+/* APLICAR RALEWAY A LOS TÍTULOS */
+h1 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 2.2rem; /* Más pequeño que el original 2.5rem */
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.1rem; /* Más pequeño que el original 1.2rem */
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+h2 {
+    font-family: 'Raleway', sans-serif;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.6rem; /* Ajustado */
+    font-weight: 600;
+}
+
+h3 {
+    font-family: 'Raleway', sans-serif;
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 1.2rem; /* Ajustado */
+    font-weight: 600;
+}
+
+/* OPCIONAL: Aplicar Raleway a todo el cuerpo si quieres consistencia */
+body {
+    font-family: 'Raleway', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
         
         .card {
             background-color: white;
